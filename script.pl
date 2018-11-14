@@ -1,38 +1,48 @@
- #!/usr/bin/perl
+ #!/usr/bin/perl -w
 
     use strict;
     use warnings;
     use File::Copy 'move';
+    use Config;
 
-    # get current user 
-    my $USER = getlogin || getpwuid($<) || "Kilroy";
+    my $LINUX = "linux";
 
-    # Set workspace dir
-    my $DIR = "/home/$USER/Downloads";
+    if ($Config{osname} eq $LINUX) {
+        # get current user 
+        my $USER = getlogin || getpwuid($<) || "Kilroy";
 
-    # Open working dir
-    opendir(DIR, $DIR) or die $!;
+        # Set workspace dir
+        my $DIR = "/home/$USER/Downloads";
 
-    while (my $FILE = readdir(DIR)) {
-        # regular expression to ignore files beginning with a period
-        next if ($FILE =~ m/^\./);
+        # Open working dir
+        opendir(DIR, $DIR) or die $!;
 
-        # Show only files
-        next unless (-f "$DIR/$FILE");
+        while (my $FILE = readdir(DIR)) {
+            # regular expression to ignore files beginning with a period
+            next if ($FILE =~ m/^\./);
 
-        # regular expression to get only the extension
-        my ($ext) = $FILE =~ /([^.]+)$/;
+            # regular expression to skip files without extension
+            next if ($FILE =~ /\w+/);
 
-        # Run directory creation according to extensions found
-        `mkdir -p $DIR/$ext`;
+            # Show only files
+            next unless (-f "$DIR/$FILE");
 
-        # Create global source and destination
-        my $SOURCE = "$DIR/$FILE";
-        my $DEST = "$DIR/$ext/";
+            # regular expression to get only the extension
+            my ($ext) = $FILE =~ /([^.]+)$/;
 
-        # Move files to respective dir
-        move($SOURCE,$DEST) or die "The move operation failed: $!";
+            # Run directory creation according to extensions found
+            `mkdir -p $DIR/$ext`;
+
+            # Create global source and destination
+            my $SOURCE = "$DIR/$FILE";
+            my $DEST = "$DIR/$ext/";
+
+            # Move files to respective dir
+            move($SOURCE,$DEST) or die "The move operation failed: $!";
+        }
+        closedir(DIR);
+        print("All files moved to their respective directory. \n");
     }
+    
 
-    closedir(DIR);
     exit 0;
