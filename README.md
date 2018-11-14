@@ -1,5 +1,7 @@
 # File-Organizer
 
+Regex Tutorial: https://www.youtube.com/watch?v=sa-TUpSx1JA  
+
 This Perl script will organize files found in a given directory according to their extensions.   
 
 # Features
