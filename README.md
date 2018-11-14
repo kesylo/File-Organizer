@@ -5,5 +5,9 @@ This Perl script will organize files found in a given directory according to the
 # Features
 
 1- Creates directories according to file's extensions  
-2- Format their names with a specific Regex  
+2- Get their extensions with regex and create folders  
 3- Send them to their corressponding folders  
+
+# Warning
+This script must be ran as admin  
+The working path must be well choosen
